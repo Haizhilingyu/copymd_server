@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  // 添加文本编辑框
+  div
+    h1 输入内容
+    textarea(placeholder='在此输入文本') 
+    button(onclick='submit()') 提交
+
+  script.
+    function submit() {
+      // 获取文本框内容并处理
+      let input = document.querySelector('textarea')
+      let text = input.value
+      fetch('/url', {
+        method: 'POST',
+        body: JSON.stringify({"markdown":text})
+      })  
+    }  
