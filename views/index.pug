@@ -1,21 +1,26 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
   // 添加文本编辑框
   div
     h1 输入内容
-    textarea(placeholder='在此输入文本') 
+    textarea(placeholder='在此输入文本',id='markdown') 
+    input(placeholder='在此输入url',id='url') 
+    input(placeholder='在此输入password',id='password') 
     button(onclick='submit()') 提交
 
   script.
     function submit() {
       // 获取文本框内容并处理
-      let input = document.querySelector('textarea')
-      let text = input.value
+      const markdownElement = document.getElementById('markdown');
+      const urlElement = document.getElementById('url');
+      const passwordElement = document.getElementById('password');
+
       fetch('/url', {
         method: 'POST',
-        body: JSON.stringify({"markdown":text})
-      })  
+        body: JSON.stringify({
+          "markdown":markdownElement.value,
+          "url":urlElement.value,
+          "password":passwordElement.value})
+      })
     }  
