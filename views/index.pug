@@ -2,12 +2,14 @@ extends layout
 
 block content
   // 添加文本编辑框
-  div
-    h1 输入内容
-    textarea(placeholder='在此输入文本',id='markdown') 
-    input(placeholder='在此输入url',id='url') 
-    input(placeholder='在此输入password',id='password') 
-    button(onclick='submit()') 提交
+  div.p-4
+    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='在此输入markdown文本', id='markdown')
+
+  div.h-16.flex.items-center.justify-end.px-4
+    input.border.rounded.p-2.w-200(placeholder='在此输入访问地址', id='url')
+    input.border.rounded.p-2.mx-5.w-200(placeholder='在此输入修改密码', id='password')
+    button.bg-blue-500.text-white.px-4.py-2.rounded(onclick='submit()') 提交
+
 
   script.
     function submit() {
