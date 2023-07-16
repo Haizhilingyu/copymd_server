@@ -3,33 +3,37 @@ extends layout
 block content
   // 添加文本编辑框
   div.p-4
-    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='在此输入markdown文本' id='markdown', required)
-    p.text-red-500.hidden#markdown-error 提示：markdown文本不能为空
+    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='Please enter the markdown text.' id='markdown', required)
+    p.text-red-500.hidden#markdown-error Markdown cannot be empty.
 
   div.h-16.flex.items-center.justify-end.px-4
-    input.border.rounded.p-2.w-200(placeholder='在此输入访问地址' id='url', required)
-    p.text-red-500.hidden#url-error 提示：访问地址不能为空
+    input.border.rounded.p-2.w-200(placeholder='Please enter the access address.' id='url', required)
+    p.text-red-500.hidden#url-error URL cannot be empty.
 
-    input.border.rounded.p-2.mx-5.w-200(placeholder='在此输入修改密码' id='password', required)
-    p.text-red-500.hidden#password-error 提示：修改密码不能为空
+    input.border.rounded.p-2.mx-5.w-200(placeholder='Please enter the modified password.' id='password', required)
+    p.text-red-500.hidden#password-error Password cannot be empty.
 
-    button.bg-blue-500.text-white.px-4.py-2.rounded(onclick='submit()') 提交
+    button.bg-blue-500.text-white.px-4.py-2.rounded(onclick='submit()') submit
 
 
   script.
+    // 创建 SimpleMDE 编辑器
+    var simplemde = new SimpleMDE({ element: document.getElementById("markdown") });
+
+    
     function submit() {
       // 获取文本框内容并处理
-      const markdownElement = document.getElementById('markdown');
+      const markdownValue = simplemde.value();
       const urlElement = document.getElementById('url');
       const passwordElement = document.getElementById('password');
-      
+
       // 隐藏错误提示
       document.getElementById('markdown-error').classList.add('hidden');
       document.getElementById('url-error').classList.add('hidden');
       document.getElementById('password-error').classList.add('hidden');
 
       // 非空校验
-      if (!markdownElement.value) {
+      if (!markdownValue) {
         document.getElementById('markdown-error').classList.remove('hidden');
         return;
       }
@@ -45,13 +49,13 @@ block content
       fetch('/url', {
         method: 'POST',
         body: JSON.stringify({
-          "markdown":markdownElement.value,
+          "markdown":markdownValue,
           "url":urlElement.value,
           "password":passwordElement.value})
       })
         .then(response => {
           if (response.status !== 200) {
-            throw new Error('请求错误');
+            throw new Error('Request Error');
           }
           // 获取接口返回的URL并跳转
           return response.json();
@@ -63,6 +67,6 @@ block content
         .catch(error => {
           console.log(error);
           // 显示错误信息
-          alert('错误：' + error.message);
+          alert('Error：' + error.message);
         });
     }  
