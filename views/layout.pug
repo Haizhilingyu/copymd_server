@@ -6,8 +6,9 @@ html
     script(src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
     script(src='https://cdn.tailwindcss.com')
   body
-    block content
-
-    footer.footer.text-center.bg-gray-200.py-4
-      p Copyright © 2023 copymd. All rights reserved.
-      p Contact Email: haizhilingyu@gmail.com
+    div.flex.flex-col.min-h-screen
+      div.flex-1.mx-auto.max-w-7xl.w-full
+        block content
+      footer.footer.text-center.flex-shrink-0.bg-gray-200.py-4.mx-auto.w-full
+        p Copyright © 2023 copymd. All rights reserved.
+        p Contact Email: haizhilingyu@gmail.com
