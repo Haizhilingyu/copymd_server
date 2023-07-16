@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const {marked} = require('marked');
+const { marked } = require('marked');
 
 const cache = new Map(); // 声明一个Map对象用于缓存数据
 router.get('/', async (ctx, next) => {
@@ -16,16 +16,20 @@ router.post('/url', async (ctx, next) => {
   if (isStringNotEmpty(markdown) && isStringNotEmpty(url) && isStringNotEmpty(password)) {
     if (cache.has(url)) {
       const cacheData = cache.get(url);
-      const { pass } = cacheData;
-      if (password !== pass) {
+      if (password === cacheData.password) {
+        console.log(markdown, url, password);
+        saveData(markdown, url, password);
+        console.log(cache);
+        ctx.body = '{"code":200,"message":"存储成功"}';
+      } else {
         ctx.body = '{"code":500,"message":"密码错误"}';
-        return
       }
+    } else {
+      console.log(markdown, url, password);
+      saveData(markdown, url, password);
+      console.log(cache);
+      ctx.body = '{"code":200,"message":"存储成功"}';
     }
-    console.log(markdown, url, password);
-    saveData(markdown, url, password);
-    console.log(cache);
-    ctx.body = '{"code":200,"message":"存储成功"}';
   } else {
     ctx.body = '{"code":500,"message":"存储失败"}';
   }
@@ -51,10 +55,22 @@ router.get('/:url', async (ctx) => {
     } else {
       // 缓存已过期，从缓存中删除
       cache.delete(url);
-      await ctx.render('error');
+      await ctx.render('error',{
+        message: "无访问地址",
+        error:{
+          status: 404,
+          stack: ""
+        }
+      });
     }
   } else {
-    await ctx.render('error');
+    await ctx.render('error',{
+      message: "无访问地址",
+      error:{
+        status: 404,
+        stack: ""
+      }
+    });
   }
 });
 

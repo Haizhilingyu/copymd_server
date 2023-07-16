@@ -6,10 +6,11 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
     "debug": "^4.1.1",
+    "jest": "^29.6.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-convert": "^1.2.0",
@@ -20,7 +21,8 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
     "marked": "^5.1.1",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
