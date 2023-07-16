@@ -12,22 +12,17 @@ function isStringNotEmpty(str) {
 
 router.post('/url', async (ctx, next) => {
   const { markdown, url, password } = JSON.parse(ctx.request.body);
-  console.log(markdown, url, password);
   if (isStringNotEmpty(markdown) && isStringNotEmpty(url) && isStringNotEmpty(password)) {
     if (cache.has(url)) {
       const cacheData = cache.get(url);
       if (password === cacheData.password) {
-        console.log(markdown, url, password);
         saveData(markdown, url, password);
-        console.log(cache);
         ctx.body = '{"code":200,"message":"存储成功"}';
       } else {
         ctx.body = '{"code":500,"message":"密码错误"}';
       }
     } else {
-      console.log(markdown, url, password);
       saveData(markdown, url, password);
-      console.log(cache);
       ctx.body = '{"code":200,"message":"存储成功"}';
     }
   } else {
@@ -44,8 +39,6 @@ function saveData(markdown, url, password) {
 // 获取缓存数据，并检查是否过期
 router.get('/:url', async (ctx) => {
   const url = ctx.params.url;
-  console.log(url);
-  console.log(cache);
   if (cache.has(url)) {
     const cacheData = cache.get(url);
     const { markdown, expiration } = cacheData;
