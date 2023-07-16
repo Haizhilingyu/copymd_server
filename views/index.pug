@@ -8,14 +8,14 @@ block content
     textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='Please enter the markdown text.' id='markdown', required)
     p.text-red-500.hidden#markdown-error Markdown cannot be empty.
 
-  div.h-16.flex.items-center.justify-end.px-4
-    input.border.rounded.p-2.w-200(placeholder='Please enter the access address.' id='url', required)
-    p.text-red-500.hidden#url-error URL cannot be empty.
+  div.px-4(class="flex flex-col lg:h-16 lg:items-center lg:justify-end lg:flex-row gap-4")
+    input.border.rounded.p-2(class="lg:w-200",placeholder='Access address.' id='url', required)
+    p.text-red-500.hidden.p-2#url-error(class="lg:w-200") URL cannot be empty.
 
-    input.border.rounded.p-2.mx-5.w-200(placeholder='Please enter the modified password.' id='password', required)
-    p.text-red-500.hidden#password-error Password cannot be empty.
+    input.border.rounded.p-2(class="lg:w-200",placeholder='Modified password.' id='password', required)
+    p.text-red-500.hidden.p-2#password-error(class="lg:w-200") Password cannot be empty.
 
-    button.bg-blue-500.text-white.px-4.py-2.rounded(onclick='submit()') submit
+    button.bg-blue-500.text-white.px-4.py-2.rounded(class="lg:w-200",onclick='submit()') submit
 
 
   script.
