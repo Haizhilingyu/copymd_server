@@ -1,4 +1,6 @@
 extends layout
 
 block content
-    #content !{content}
+    link(rel='stylesheet', href='/stylesheets/default-theme.css')
+    div(class="lg:mx-20")
+        #content !{content}
