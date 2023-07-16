@@ -17,13 +17,14 @@ router.post('/url', async (ctx, next) => {
       const cacheData = cache.get(url);
       if (password === cacheData.password) {
         saveData(markdown, url, password);
-        ctx.body = '{"code":200,"message":"存储成功"}';
+        console.log(url);
+        ctx.body = '{"code":200,"data":{"url":"' + url + '"},"message":"存储成功"}';
       } else {
         ctx.body = '{"code":500,"message":"密码错误"}';
       }
     } else {
       saveData(markdown, url, password);
-      ctx.body = '{"code":200,"message":"存储成功"}';
+      ctx.body = '{"code":200,"data":{"url":"' + url + '"},"message":"存储成功"}';
     }
   } else {
     ctx.body = '{"code":500,"message":"存储失败"}';

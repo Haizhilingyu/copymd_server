@@ -3,11 +3,16 @@ extends layout
 block content
   // 添加文本编辑框
   div.p-4
-    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='在此输入markdown文本', id='markdown')
+    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='在此输入markdown文本' id='markdown', required)
+    p.text-red-500.hidden#markdown-error 提示：markdown文本不能为空
 
   div.h-16.flex.items-center.justify-end.px-4
-    input.border.rounded.p-2.w-200(placeholder='在此输入访问地址', id='url')
-    input.border.rounded.p-2.mx-5.w-200(placeholder='在此输入修改密码', id='password')
+    input.border.rounded.p-2.w-200(placeholder='在此输入访问地址' id='url', required)
+    p.text-red-500.hidden#url-error 提示：访问地址不能为空
+
+    input.border.rounded.p-2.mx-5.w-200(placeholder='在此输入修改密码' id='password', required)
+    p.text-red-500.hidden#password-error 提示：修改密码不能为空
+
     button.bg-blue-500.text-white.px-4.py-2.rounded(onclick='submit()') 提交
 
 
@@ -17,6 +22,25 @@ block content
       const markdownElement = document.getElementById('markdown');
       const urlElement = document.getElementById('url');
       const passwordElement = document.getElementById('password');
+      
+      // 隐藏错误提示
+      document.getElementById('markdown-error').classList.add('hidden');
+      document.getElementById('url-error').classList.add('hidden');
+      document.getElementById('password-error').classList.add('hidden');
+
+      // 非空校验
+      if (!markdownElement.value) {
+        document.getElementById('markdown-error').classList.remove('hidden');
+        return;
+      }
+      if (!urlElement.value) {
+        document.getElementById('url-error').classList.remove('hidden');
+        return;
+      }
+      if (!passwordElement.value) {
+        document.getElementById('password-error').classList.remove('hidden');
+        return;
+      }
 
       fetch('/url', {
         method: 'POST',
@@ -25,4 +49,20 @@ block content
           "url":urlElement.value,
           "password":passwordElement.value})
       })
+        .then(response => {
+          if (response.status !== 200) {
+            throw new Error('请求错误');
+          }
+          // 获取接口返回的URL并跳转
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+          window.location.href = '/' + data.data.url;
+        })
+        .catch(error => {
+          console.log(error);
+          // 显示错误信息
+          alert('错误：' + error.message);
+        });
     }  
