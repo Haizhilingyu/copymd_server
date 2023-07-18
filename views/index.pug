@@ -9,7 +9,7 @@ block content
     p.text-red-500.hidden#markdown-error Markdown cannot be empty.
 
   div.px-4(class="flex flex-col lg:h-16 lg:items-center lg:justify-end lg:flex-row gap-4")
-    input.border.rounded.p-2(class="lg:w-200",placeholder='Access address.' id='url', required)
+    input.border.rounded.p-2(class="lg:w-200",placeholder='Access address.' id='url', required,value=url)
     p.text-red-500.hidden.p-2#url-error(class="lg:w-200") URL cannot be empty.
 
     input.border.rounded.p-2(class="lg:w-200",placeholder='Modified password.' id='password', required)
@@ -20,7 +20,10 @@ block content
 
   script.
     // 创建 SimpleMDE 编辑器
-    var simplemde = new SimpleMDE({ element: document.getElementById("markdown") });
+    var simplemde = new SimpleMDE({
+      element: document.getElementById('markdown'),
+      initialValue: `#{markdown}`,
+    });
 
     
     function submit() {
@@ -45,6 +48,7 @@ block content
       }
       if (!passwordElement.value) {
         document.getElementById('password-error').classList.remove('hidden');
+        document.getElementById('password-error').innerHTML = 'Password cannot be empty.'
         return;
       }
 
@@ -56,11 +60,15 @@ block content
           "password":passwordElement.value})
       })
         .then(response => {
-          if (response.status !== 200) {
-            throw new Error('Request Error');
+          if (response.ok) {
+            // 请求成功，处理响应数据
+            return response.json();
+          } else {
+            // 请求失败，获取错误信息
+            return response.text().then(errorMessage => {
+              throw new Error(errorMessage);
+            });
           }
-          // 获取接口返回的URL并跳转
-          return response.json();
         })
         .then(data => {
           console.log(data);
@@ -68,7 +76,9 @@ block content
         })
         .catch(error => {
           console.log(error);
+          document.getElementById('password-error').classList.remove('hidden');
+          document.getElementById('password-error').innerHTML = error.message
           // 显示错误信息
-          alert('Error：' + error.message);
+          //- alert('Error：' + error.message);
         });
     }  

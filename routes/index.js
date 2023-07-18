@@ -20,7 +20,19 @@ function clearExpiredData() {
 setInterval(clearExpiredData, 5 * 60 * 1000); // 每隔 5 分钟清理一次
 
 router.get('/', async (ctx, next) => {
+  // 获取当前请求的 URL 查询参数对象
+  const queryParams = ctx.request.query;
+  let { markdown, url } = { markdown: "", url: "" };
+  // 检查是否存在请求参数
+  // 检查缓存中是否存在指定的 URL 的值
+  if (Object.keys(queryParams).length > 0 && queryParams.url && cache.get(queryParams.url)) {
+    const cachedValue = cache.get(queryParams.url);
+    markdown = cachedValue.markdown;
+    url = queryParams.url;
+  }
   await ctx.render('index', {
+    markdown,
+    url,
   })
 })
 function isStringNotEmpty(str) {
@@ -37,14 +49,16 @@ router.post('/url', async (ctx, next) => {
         console.log(url);
         ctx.body = '{"code":200,"data":{"url":"' + url + '"},"message":"Save Success!"}';
       } else {
-        ctx.body = '{"code":500,"message":"Incorrect password."}';
+        ctx.response.status = 500;
+        ctx.body = 'Incorrect password.';
       }
     } else {
       saveData(markdown, url, password);
       ctx.body = '{"code":200,"data":{"url":"' + url + '"},"message":"Save Success!"}';
     }
   } else {
-    ctx.body = '{"code":500,"message":"Save Error!"}';
+    ctx.response.status = 500;
+    ctx.body = 'Save Error.';
   }
 })
 
