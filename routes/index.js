@@ -7,7 +7,7 @@ const expirationTime = 20 * 60 * 1000; // 过期时间
 // 清理过期数据的函数
 function clearExpiredData() {
   const currentTime = Date.now();
-  
+
   for (const [url, data] of cache.entries()) {
     const { expiration } = data;
     if (expiration <= currentTime) {
@@ -62,22 +62,22 @@ router.get('/:url', async (ctx) => {
     const { markdown, expiration } = cacheData;
 
     if (expiration > Date.now()) {
-      await ctx.render('preview', { content: marked(markdown) });
+      await ctx.render('preview', { content: marked(markdown), expiration });
     } else {
       // 缓存已过期，从缓存中删除
       cache.delete(url);
-      await ctx.render('error',{
+      await ctx.render('error', {
         message: "Page not found.",
-        error:{
+        error: {
           status: 404,
           stack: ""
         }
       });
     }
   } else {
-    await ctx.render('error',{
+    await ctx.render('error', {
       message: "Page not found.",
-      error:{
+      error: {
         status: 404,
         stack: ""
       }

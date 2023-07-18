@@ -1,6 +1,67 @@
 extends layout
 
 block content
-    link(rel='stylesheet', href='/stylesheets/default-theme.css')
+    //- link(rel='stylesheet' href='/stylesheets/default-theme.css')
     div(class="lg:mx-20")
-        #content !{content}
+        my-component
+            | !{content}
+    // 使用 Flex 布局将内容垂直居中，并设置宽度和高度
+    div(class="flex justify-end items-end fixed bottom-20 right-0 w-100 h-16 p-4")
+        // 添加用于展示倒计时的元素
+        div(id="countdown", class="p-2 rounded")
+
+    script.
+        // 创建自定义元素 MyComponent
+        class MyComponent extends HTMLElement {
+            constructor() {
+                super();
+
+                // 创建 Shadow DOM
+                this.shadow = this.attachShadow({ mode: 'open' });
+
+                // 获取父元素传递的 HTML 内容
+                const htmlContent = this.innerHTML;
+
+                // 将 HTML 内容插入到 Shadow DOM 中
+                this.shadow.innerHTML = htmlContent;
+
+                // 创建 <link> 元素，并设置属性
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '/stylesheets/default-theme.css';
+
+                // 将 <link> 元素添加到 Shadow DOM 中
+                this.shadow.appendChild(link);
+            }
+        }
+
+        // 定义自定义元素
+        customElements.define('my-component', MyComponent);
+
+        // 获取从 Pug 模板传递的 expiration 参数
+        const expirationTime = #{expiration};
+
+        // 更新倒计时显示
+        const countdownElement = document.getElementById('countdown');
+
+        const updateCountdown = () => {
+            const currentTime = Date.now();
+            const remainingTime = expirationTime - currentTime;
+
+            // 如果倒计时结束，则显示提示信息
+            if (remainingTime <= 0) {
+                countdownElement.textContent = 'Destroyed';
+            } else {
+                // 将剩余时间格式化为分钟和秒数
+                const minutes = Math.floor(remainingTime / 1000 / 60);
+                const seconds = Math.floor((remainingTime / 1000) % 60);
+
+                // 更新倒计时显示
+                countdownElement.textContent = `Destroy Countdown: ${minutes}:${seconds}`;
+
+                // 每秒更新一次倒计时
+                setTimeout(updateCountdown, 1000);
+            }
+        };
+
+        updateCountdown();
