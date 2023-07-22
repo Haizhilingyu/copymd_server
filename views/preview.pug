@@ -16,9 +16,9 @@ block content
             <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>
         // 添加用于展示倒计时的元素
         div(id="countdown", class="p-2 rounded")
-    div(class="fixed flex items-center justify-center z-10 border top-0 w-auto max-w-xs")
-        p 这是一个提示框
-        <i class="message-close-btn">&times;</i>
+    div(class="absolute flex items-center gap-x-2 justify-center z-10 border top-5 right-5 px-4 py-2 rounded hidden",id="copyTip")
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+        p Markdown text copied!
 
   
     script.
@@ -50,6 +50,7 @@ block content
         }
         function copyMarkdown() {
             navigator.clipboard.writeText(`#{markdown}`)
+            showModal();
         }
         // 创建自定义元素 MyComponent
         class MyComponent extends HTMLElement {
@@ -120,3 +121,12 @@ block content
             // 跳转到首页
             window.location.href = newUrl;
         });
+
+        function showModal() {
+            document.getElementById('copyTip').classList.remove('hidden');
+            // 显示模态框
+            setTimeout(function() {
+                document.getElementById('copyTip').classList.add('hidden');
+                // 隐藏模态框
+            }, 3000); // 3秒后执行匿名函数
+        }
