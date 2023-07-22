@@ -76,7 +76,7 @@ router.get('/:url', async (ctx) => {
     const { markdown, expiration } = cacheData;
 
     if (expiration > Date.now()) {
-      await ctx.render('preview', { content: marked(markdown), expiration });
+      await ctx.render('preview', { content: marked(markdown), expiration, markdown });
     } else {
       // 缓存已过期，从缓存中删除
       cache.delete(url);
