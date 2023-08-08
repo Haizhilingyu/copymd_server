@@ -68,11 +68,14 @@ async function getData(url) {
 
 // 获取缓存数据，并检查是否过期
 router.get('/:url', async (ctx) => {
-    const url = ctx.params.url;
-    const cacheData = await getData(url)
-    console.log(cacheData)
-    if (cacheData && cacheData.markdown) {
-        await ctx.render('preview', {content: marked(cacheData.markdown),expiration: cacheData.expiration, markdown: cacheData.markdown});
+  const url = ctx.params.url;
+  console.log(url);
+  if (cache.has(url)) {
+    const cacheData = cache.get(url);
+    const { markdown, expiration } = cacheData;
+
+    if (expiration > Date.now()) {
+      await ctx.render('preview', { content: marked(markdown), expiration, markdown });
     } else {
         await ctx.render('error', {
             message: "Page not found.",
