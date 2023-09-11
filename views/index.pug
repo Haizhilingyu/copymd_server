@@ -1,15 +1,13 @@
 extends layout
 
 block content
-  link(rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css")
-  script(src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
   // 添加文本编辑框
   div.p-4
-    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 10rem);' placeholder='Please enter the markdown text.' id='markdown', required)
+    textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 14rem);' placeholder='Please enter the markdown text.' id='markdown', required)
     p.text-red-500.hidden#markdown-error Markdown cannot be empty.
 
   div.px-4(class="flex flex-col lg:h-16 lg:items-center lg:justify-end lg:flex-row gap-4")
-    input.border.rounded.p-2(class="lg:w-200",placeholder='Access address.' id='url', required,value=url)
+    input.border.rounded.p-2(class="lg:w-200",placeholder='Access address.' id='url', required)
     p.text-red-500.hidden.p-2#url-error(class="lg:w-200") URL cannot be empty.
 
     input.border.rounded.p-2(class="lg:w-200",placeholder='Modified password.' id='password', required)
@@ -19,18 +17,46 @@ block content
 
 
   script.
-    // 创建 SimpleMDE 编辑器
-    var simplemde = new SimpleMDE({
-      element: document.getElementById('markdown'),
-      initialValue: `#{markdown}`,
-    });
+    // 获取文本框内容并处理
+    const markdownElement = document.getElementById('markdown');
+    const urlElement = document.getElementById('url');
+    const passwordElement = document.getElementById('password');
+    function generateRandomString(length) {
+      const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
 
-    
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters[randomIndex];
+      }
+
+      return result;
+    }
+
+    function shuffleString(str) {
+      const arr = str.split('');
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr.join('');
+    }
+    function init(){
+        const md = `#{markdown}`;
+        const url = `#{url}`;
+        if(md!=null&&md.length>0){
+            markdownElement.value = md;
+            urlElement.value = url;
+        }else{
+            const randomString = generateRandomString(4);
+            const shuffledString = shuffleString(randomString);
+            urlElement.value = shuffledString;
+            passwordElement.value = shuffledString;
+        }
+    }
+    init();
     function submit() {
-      // 获取文本框内容并处理
-      const markdownValue = simplemde.value();
-      const urlElement = document.getElementById('url');
-      const passwordElement = document.getElementById('password');
+      
 
       // 隐藏错误提示
       document.getElementById('markdown-error').classList.add('hidden');
@@ -38,7 +64,7 @@ block content
       document.getElementById('password-error').classList.add('hidden');
 
       // 非空校验
-      if (!markdownValue) {
+      if (!markdownElement.value) {
         document.getElementById('markdown-error').classList.remove('hidden');
         return;
       }
@@ -55,7 +81,7 @@ block content
       fetch('/url', {
         method: 'POST',
         body: JSON.stringify({
-          "markdown":markdownValue,
+          "markdown":markdownElement.value,
           "url":urlElement.value,
           "password":passwordElement.value})
       })
