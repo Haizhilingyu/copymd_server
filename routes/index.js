@@ -1,6 +1,11 @@
 const router = require('koa-router')()
 const {marked} = require('marked');
-import { kv } from '@vercel/kv';
+const { createClient } = require('@vercel/kv');
+
+const kv = createClient({
+    url: process.env.USERS_REST_API_URL,
+    token: process.env.USERS_REST_API_TOKEN,
+});
 router.get('/', async (ctx, next) => {
     // 获取当前请求的 URL 查询参数对象
     const queryParams = ctx.request.query;
