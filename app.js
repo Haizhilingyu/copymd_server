@@ -6,7 +6,7 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
-const index = require('./routes/index')
+require('dotenv').config({path: '.env.dev'})
 
 // error handler
 onerror(app)
@@ -32,6 +32,7 @@ app.use(async (ctx, next) => {
 })
 
 // routes
+const index = require('./routes/index')
 app.use(index.routes(), index.allowedMethods())
 
 // error-handling

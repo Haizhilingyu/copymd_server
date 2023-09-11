@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 const {marked} = require('marked');
-const { createClient } = require('@vercel/kv');
+const {createClient} = require('@vercel/kv');
 
 const kv = createClient({
     url: process.env.KV_REST_API_URL,
@@ -32,7 +32,7 @@ router.post('/url', async (ctx, next) => {
     const {markdown, url, password} = JSON.parse(ctx.request.body);
     if (isStringNotEmpty(markdown) && isStringNotEmpty(url) && isStringNotEmpty(password)) {
         const cacheData = await getData(url)
-        if (cacheData.markdown) {
+        if (cacheData && cacheData.markdown) {
             if (password === cacheData.password) {
                 await saveData(markdown, url, password);
                 console.log(url);
@@ -53,7 +53,9 @@ router.post('/url', async (ctx, next) => {
 
 async function saveData(markdown, url, password) {
     try {
-        await kv.set(url, {markdown, password}, { ex: 100, nx: true });
+        const expirationTime = 20 * 60 * 1000;
+        const expiration = Date.now() + expirationTime;
+        await kv.set(url, {markdown, password, expiration}, {ex: expirationTime});
     } catch (error) {
         // Handle errors
     }
@@ -67,9 +69,10 @@ async function getData(url) {
 // 获取缓存数据，并检查是否过期
 router.get('/:url', async (ctx) => {
     const url = ctx.params.url;
-    const {markdown, password} = await getData(url)
-    if (markdown) {
-        await ctx.render('preview', {content: marked(markdown), markdown: markdown});
+    const cacheData = await getData(url)
+    console.log(cacheData)
+    if (cacheData && cacheData.markdown) {
+        await ctx.render('preview', {content: marked(cacheData.markdown),expiration: cacheData.expiration, markdown: cacheData.markdown});
     } else {
         await ctx.render('error', {
             message: "Page not found.",

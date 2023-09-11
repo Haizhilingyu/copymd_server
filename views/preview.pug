@@ -87,7 +87,7 @@ block content
         customElements.define('my-component', MyComponent);
 
         // 获取从 Pug 模板传递的 expiration 参数
-        const expirationTime = #{expiration} || new Date();
+        const expirationTime = #{expiration};
 
         // 更新倒计时显示
         const countdownElement = document.getElementById('countdown');
