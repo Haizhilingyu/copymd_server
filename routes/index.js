@@ -3,8 +3,8 @@ const {marked} = require('marked');
 const { createClient } = require('@vercel/kv');
 
 const kv = createClient({
-    url: process.env.USERS_REST_API_URL,
-    token: process.env.USERS_REST_API_TOKEN,
+    url: process.env.KV_REST_API_URL,
+    token: process.env.KV_REST_API_TOKEN,
 });
 router.get('/', async (ctx, next) => {
     // 获取当前请求的 URL 查询参数对象
