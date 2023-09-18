@@ -9,7 +9,7 @@ const kv = createClient({
 router.get('/', async (ctx, next) => {
     // 获取当前请求的 URL 查询参数对象
     const queryParams = ctx.request.query;
-    let {markdown, url} = {markdown: "", url: ""};
+    let {markdown, url} = queryParams;
     // 检查是否存在请求参数
     // 检查缓存中是否存在指定的 URL 的值
 
@@ -70,21 +70,19 @@ async function getData(url) {
 router.get('/:url', async (ctx) => {
   const url = ctx.params.url;
   console.log(url);
-  if (cache.has(url)) {
-    const cacheData = cache.get(url);
-    const { markdown, expiration } = cacheData;
-
-    if (expiration > Date.now()) {
-      await ctx.render('preview', { content: marked(markdown), expiration, markdown });
-    } else {
-        await ctx.render('error', {
-            message: "Page not found.",
-            error: {
-                status: 404,
-                stack: ""
-            }
-        });
-    }
+  const cacheData = await getData(url)
+  console.log(cacheData)
+  if (cacheData && cacheData.markdown) {
+      await ctx.render('preview', {content: marked(cacheData.markdown),expiration: cacheData.expiration, markdown: cacheData.markdown});
+  } else {
+      await ctx.render('error', {
+          message: "Page not found.",
+          error: {
+              status: 404,
+              stack: ""
+          }
+      });
+  }
 });
 
 module.exports = router

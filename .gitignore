@@ -2,3 +2,4 @@
 .vercel
 .temp
 .cache
+docs/.vuepress/dist
