@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    div(class="grid place-items-center h-screen content-center gap-2")
+        label(for="isPrivate", class="w-11/12 md:w-96") Please enter the password to access this page.
+        input.border.rounded.p-2(type="password",checked,class="w-11/12 md:w-96",placeholder='Input your password.' id='password', required)
+        button.bg-blue-500.text-white.px-4.py-2.rounded(class="w-11/12 md:w-96",onclick='submit()') Access
+
+    script.
+        const passwordElement = document.getElementById('password');
+        function submit() {
+            // 构建新的 URL 地址，将当前 URL 作为参数传递给首页
+            var newUrl = '/#{url}?password=' + encodeURIComponent(passwordElement.value);
+
+            // 跳转到首页
+            window.location.href = newUrl;
+        }  

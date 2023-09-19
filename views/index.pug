@@ -13,7 +13,10 @@ block content
 
     input.border.rounded.p-2(class="lg:w-200",placeholder='Modified password.' id='password', required)
     p.text-red-500.hidden.p-2#password-error(class="lg:w-200") Password cannot be empty.
-
+    
+    div(class="flex items-center")
+      input.border.rounded.p-2(type="checkbox",checked,class="lg:w-200",placeholder='Modified password.' id='isPrivate', required)
+      label(for="isPrivate", class="ml-2") Private Access
     button.bg-blue-500.text-white.px-4.py-2.rounded(class="lg:w-200",onclick='submit()') submit
 
 
@@ -22,6 +25,7 @@ block content
     const markdownElement = document.getElementById('markdown');
     const urlElement = document.getElementById('url');
     const passwordElement = document.getElementById('password');
+    const isPrivateElement = document.getElementById('isPrivate');
     function generateRandomString(length) {
       const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
       let result = '';
@@ -84,6 +88,7 @@ block content
         body: JSON.stringify({
           "markdown":markdownElement.value,
           "url":urlElement.value,
+          "isPrivate":isPrivateElement.checked,
           "password":passwordElement.value})
       })
         .then(response => {

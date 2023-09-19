@@ -117,9 +117,6 @@ block content
         }
 
         updateCountdown();
-        // 获取当前 URL 地址
-        var currentUrl = window.location.href;
-        var url = currentUrl.split('/').pop();
 
         // 获取跳转按钮元素
         var redirectButton = document.getElementById('redirectButton');
@@ -127,7 +124,7 @@ block content
         // 监听按钮的点击事件
         redirectButton.addEventListener('click', function() {
             // 构建新的 URL 地址，将当前 URL 作为参数传递给首页
-            var newUrl = '/?url=' + encodeURIComponent(url);
+            var newUrl = '/?url=' + encodeURIComponent("#{url}");
 
             // 跳转到首页
             window.location.href = newUrl;
