@@ -49,11 +49,11 @@ block content
     function init(){
         const md = `#{markdown}`;
         const url = `#{url}`;
-        const isPrivate = #{isPrivate};
+        const isPrivate = `#{isPrivate}`;
         if(md!=null&&md.length>0){
             markdownElement.value = md;
             urlElement.value = url;
-            isPrivateElement.checked = isPrivate;
+            isPrivateElement.checked = (isPrivate === "true");
         }else{
             const randomString = generateRandomString(4);
             const shuffledString = shuffleString(randomString);
