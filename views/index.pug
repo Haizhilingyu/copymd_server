@@ -1,13 +1,13 @@
 extends layout
 
 block content
-  div(class="font-sans md:text-lg p-4 md:mt-10") Sync notes across devices with this Markdown text sharing tool. Send messages from any browser - phone, tablet, laptop. Support custom access URLs and password changes. Each custom page only exists for 20 minutes. Password must be entered to modify the page. After the page is modified, the survival time of 20 minutes will be restored. Try it out for effortless syncing on the go!❤️
+  div(class="p-4 font-sans md:text-lg md:mt-10") Sync notes across devices with this Markdown text sharing tool. Send messages from any browser - phone, tablet, laptop. Support custom access URLs and password changes. Each custom page only exists for 20 minutes. Password must be entered to modify the page. After the page is modified, the survival time of 20 minutes will be restored. Try it out for effortless syncing on the go!❤️
   // 添加文本编辑框
   div.p-4
     textarea.border.rounded.p-2.mb-2.w-full(style='height: calc(100vh - 24rem);' placeholder='Please enter the markdown text.' id='markdown', required)
     p.text-red-500.hidden#markdown-error Markdown cannot be empty.
 
-  div.px-4(class="flex flex-col lg:h-16 lg:items-center lg:justify-end lg:flex-row gap-4")
+  div.px-4(class="flex flex-col gap-4 lg:h-16 lg:items-center lg:justify-end lg:flex-row")
     input.border.rounded.p-2(class="lg:w-200",placeholder='Access address.' id='url', required)
     p.text-red-500.hidden.p-2#url-error(class="lg:w-200") URL cannot be empty.
 
@@ -49,9 +49,11 @@ block content
     function init(){
         const md = `#{markdown}`;
         const url = `#{url}`;
+        const isPrivate = #{isPrivate};
         if(md!=null&&md.length>0){
             markdownElement.value = md;
             urlElement.value = url;
+            isPrivateElement.checked = isPrivate;
         }else{
             const randomString = generateRandomString(4);
             const shuffledString = shuffleString(randomString);

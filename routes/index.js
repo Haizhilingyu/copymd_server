@@ -46,7 +46,7 @@ router.post('/url', async (ctx, next) => {
                 ctx.body = 'Incorrect password.';
             }
         } else {
-            await saveData(markdown, url, password);
+            await saveData(markdown, url, password, isPrivate);
             ctx.body = '{"code":200,"data":{"url":"' + url + '"},"message":"Save Success!"}';
         }
     } else {
@@ -80,8 +80,7 @@ router.get('/:url', async (ctx) => {
     if (cacheData && cacheData.expiration && cacheData.expiration > Date.now()) {
         if (cacheData.isPrivate) {
             const queryParams = ctx.request.query;
-            let { password } = queryParams;
-            if (password === cacheData.password) {
+            if (queryParams.password && queryParams.password === cacheData.password) {
                 await ctx.render('preview', { "url": url, "content": marked(cacheData.markdown), "expiration": cacheData.expiration, "markdown": cacheData.markdown });
             } else {
                 await ctx.render('verification', { "url": url })
