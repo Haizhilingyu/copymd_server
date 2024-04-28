@@ -18,16 +18,16 @@ if(!userProgress|| !userProgress.activeCourse){
     <div className="flex flex-row-reverse gap-[48px] px-6">
       <StickyWrapper>
         <UserProgress
-        activeCourse={{title: "English",imageSrc: "/vercel.svg"}}
-        hearts={5}
-        points={100}
+        activeCourse={userProgress.activeCourse}
+        hearts={userProgress.hearts}
+        points={userProgress.points}
         hasActiveSubscription={false}
         >
 
         </UserProgress>
       </StickyWrapper>
       <FeedWrapper>
-        <Header title="English"/>
+        <Header title={userProgress.activeCourse.title}/>
 
         <div></div>
       </FeedWrapper>
