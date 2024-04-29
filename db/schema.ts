@@ -56,7 +56,7 @@ export const challenges = pgTable("challenges", {
   order: integer("order").notNull(),
 
 });
-export const challangesRelations = relations(challenges, ({ one, many }) => ({
+export const challengesRelations = relations(challenges, ({ one, many }) => ({
   lesson: one(lessons,{
     fields: [challenges.lessonId],
     references: [lessons.id],
@@ -83,7 +83,6 @@ export const challengeOptions = pgTable("challenge_options", {
   challengeId: integer("challenge_id")
     .references(() => challenges.id, { onDelete: "cascade" })
     .notNull(),
-  type: challangesEnum("type").notNull(),
   text: text("text").notNull(),
   correct: boolean("correct").notNull(),
   imageSrc: text("image_src"),
@@ -112,7 +111,7 @@ export const challengeProgressRelations = relations(challengeProgress, ({ one, m
     fields: [challengeProgress.challengeId],
     references: [challenges.id],
   }),
-  challengeOptions: many(challengeOptions)
+  // challengeOptions: many(challengeOptions)
 }));
 
 export const userProgress = pgTable("user_progress", {
