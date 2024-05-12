@@ -42,11 +42,15 @@ export const getUnits = cache(async () => {
 
   const normalilzedData = data.map((unit) => {
     const lessonsWithCompletedStatus = unit.lessons.map((lesson) => {
+      if (lesson.challenges.length === 0) {
+        return { ...lesson, completed: false };
+      }
+
       const allCompletedChallenges = lesson.challenges.every((challenge) => {
         return (
-          challenge.challengeProgress 
-          && challenge.challengeProgress.length > 0 
-          && challenge.challengeProgress.every((progress) => progress.completed)
+          challenge.challengeProgress &&
+          challenge.challengeProgress.length > 0 &&
+          challenge.challengeProgress.every((progress) => progress.completed)
         );
       });
       return { ...lesson, completed: allCompletedChallenges };
@@ -115,9 +119,11 @@ export const getCourseProgress = cache(async () => {
     .find((lesson) => {
       return lesson.challenges.some((challenge) => {
         return (
-          !challenge.challengeProgress 
-          || challenge.challengeProgress.length === 0
-          || challenge.challengeProgress.some((progress)=>progress.completed === false)
+          !challenge.challengeProgress ||
+          challenge.challengeProgress.length === 0 ||
+          challenge.challengeProgress.some(
+            (progress) => progress.completed === false
+          )
         );
       });
     });
@@ -162,8 +168,9 @@ export const getLesson = cache(async (id?: number) => {
   const normalizedChallenges = data.challenges.map((challenge) => {
     // TODO: if something does not work,check the last if clause
     const completed =
-      challenge.challengeProgress && challenge.challengeProgress.length > 0
-      && challenge.challengeProgress.every((progress) => progress.completed);
+      challenge.challengeProgress &&
+      challenge.challengeProgress.length > 0 &&
+      challenge.challengeProgress.every((progress) => progress.completed);
 
     return { ...challenge, completed };
   });
@@ -174,23 +181,25 @@ export const getLesson = cache(async (id?: number) => {
   };
 });
 
-export const getLessonPercentage = cache(async ()=> {
+export const getLessonPercentage = cache(async () => {
   const courseProgress = await getCourseProgress();
 
-  if(!courseProgress?.activeLessonId){
+  if (!courseProgress?.activeLessonId) {
     return 0;
   }
 
   const lesson = await getLesson(courseProgress.activeLessonId);
 
-  if(!lesson){
+  if (!lesson) {
     return 0;
   }
 
-  const completedChallenges = lesson.challenges.filter((challenge)=>challenge.completed);
+  const completedChallenges = lesson.challenges.filter(
+    (challenge) => challenge.completed
+  );
 
   const percentage = Math.round(
-    (completedChallenges.length/lesson.challenges.length)*100,
-  )
+    (completedChallenges.length / lesson.challenges.length) * 100
+  );
   return percentage;
-})
+});
